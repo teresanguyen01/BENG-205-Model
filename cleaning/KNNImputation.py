@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.impute import KNNImputer
 
-fileNames = ['NHIS_BENG_prototype.csv']
+fileNames = ['/Users/teresanguyen/Documents/BENG_205_ML/data/NHIS_BENG_prototype']
 suffix = '_imputed'
 ext = '.csv'
 
