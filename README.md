@@ -1,4 +1,4 @@
-BENG 205 Predictive Neural Network Model for Coronary Heart Disease
+# BENG 205 Predictive Neural Network Model for Coronary Heart Disease
 
 ## Overview
 This project is a **Binary Neural Network Model** designed to predict the likelihood of coronary heart disease using the NHIS (National Health Interview Survey) dataset. The pipeline involves data preprocessing, KNN imputation for missing values, training, evaluation using cross-validation, and visualization of model performance metrics.
