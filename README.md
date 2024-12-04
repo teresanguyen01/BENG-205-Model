@@ -34,6 +34,8 @@ Install required Python libraries:
 ```bash
 pip install pandas numpy matplotlib tensorflow scikit-learn
 ```
+Libaries are also installed in ```requirements.txt```
+It would be best to create a virtual environment.
 
 ## Pipeline
 1. **Data Cleaning in R**:
@@ -66,7 +68,7 @@ pip install pandas numpy matplotlib tensorflow scikit-learn
 2. **Run Python Script**:
    - Use the provided Python script to train and evaluate the model:
      ```bash
-     python beng_neural_network.py
+     python ML_model.py
      ```
 
 3. **Visualizations**:
