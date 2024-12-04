@@ -1,0 +1,112 @@
+---
+title: "NHIS Data Cleaning"
+output: html_notebook
+---
+
+Load in the data
+
+```{r}
+
+nhis_data <- read.csv("Documents/BENG_205_ML/nhis_00008.csv")
+head(nhis_data)
+
+```
+
+
+```{r}
+
+library(dplyr)
+NHIS_BENG_Edit <- nhis_data %>% 
+  select(-YEAR, -SERIAL, -STRATA, -PSU, -NHISHID, -PERNUM, -NHISPID, -HHX, -SAMPWEIGHT, -ASTATFLG, -CSTATFLG) %>%
+  filter(AGE >= 18)
+
+head(NHIS_BENG_Edit)
+colnames(NHIS_BENG_Edit)
+number_of_features <- ncol(NHIS_BENG_Edit)
+
+NHIS_BENG_Edit$AGE <- NHIS_BENG_Edit$AGE/100
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(WEIGHT = case_when(
+    WEIGHT %in% c(000, 996, 997, 998, 999) ~ NA_real_,
+    TRUE ~ WEIGHT / 500
+  ))
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(presc_med = case_when(
+    PREMEDYR == 2 ~ 1,            
+    PREMEDYR == 1 ~ 0,            
+    PREMEDYR %in% c(7, 8, 9) ~ 0, 
+    TRUE ~ 0                 
+))
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(aspirin = case_when(
+    ASPMEDEV == 2 ~ 1,            
+    ASPMEDEV == 1 ~ 0,            
+    ASPMEDEV %in% c(7, 8, 9) ~ 0, 
+    TRUE ~ 0                 
+))
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(diabetes = case_when(
+    DIABETICEV == 2 ~ 1,            
+    DIABETICEV == 1 ~ 0,            
+    DIABETICEV %in% c(7, 8, 9) ~ 0, 
+    TRUE ~ 0                 
+))
+
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(smoker = case_when(
+    SMOKESTATUS2 %in% c("10", "11", "12", "13", "20", "40") ~ 1,  # Current or former smokers
+    SMOKESTATUS2 == "30" ~ 0,                                      # Never smoked
+    SMOKESTATUS2 %in% c("00", "90") ~ NA_real_,                    # Unknown
+    TRUE ~ NA_real_                                                  # Covers any unexpected cases
+  ))
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(cigar = case_when(
+    CIGARFREQNOW == 2 ~ 1,            
+    CIGARFREQNOW == 1 ~ 0,            
+    CIGARFREQNOW %in% c(7, 8, 9) ~ 0, 
+    TRUE ~ 0                 
+))
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(pipe = case_when(
+    PIPEFREQNOW == 2 ~ 1,            
+    PIPEFREQNOW == 1 ~ 0,            
+    PIPEFREQNOW %in% c(7, 8, 9) ~ 0, 
+    TRUE ~ 0                 
+))
+
+NHIS_BENG_Edit <- NHIS_BENG_Edit %>%
+  mutate(corn_disease = case_when(
+    CHEARTDIEV == 2 ~ 1,            
+    CHEARTDIEV == 1 ~ 0,            
+    CHEARTDIEV %in% c(7, 8, 9) ~ 0, 
+    TRUE ~ 0                 
+))
+
+
+cleanedData <- data.frame(
+  age = NHIS_BENG_Edit$AGE,
+  weight = NHIS_BENG_Edit$WEIGHT,
+  presc_med = NHIS_BENG_Edit$presc_med,
+  aspirin = NHIS_BENG_Edit$aspirin,
+  diabetes = NHIS_BENG_Edit$diabetes,
+  smoker = NHIS_BENG_Edit$smoker,
+  cigar = NHIS_BENG_Edit$cigar,
+  pipe = NHIS_BENG_Edit$pipe,
+  coronary_disease = NHIS_BENG_Edit$corn_disease
+)
+
+
+```
+
+```{r}
+
+write.csv(cleanedData, 'NHIS_BENG_prototype.csv', row.names = FALSE)
+
+```
