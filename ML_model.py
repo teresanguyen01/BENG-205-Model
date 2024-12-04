@@ -26,12 +26,12 @@ def calculate_metrics(y_true, y_pred):
 def create_model(input_dim):
     model = keras.models.Sequential([
         keras.layers.Dense(120, activation='relu', input_shape=(input_dim,),
-                           kernel_initializer=keras.initializers.glorot_normal(),
+                           kernel_initializer=keras.initializers.glorot_normal(), # prevent vanishing and exploding gradients
                            bias_initializer=keras.initializers.Zeros()),
         keras.layers.Dense(80, activation='relu',
                            kernel_initializer=keras.initializers.glorot_normal(),
                            bias_initializer=keras.initializers.Zeros()),
-        keras.layers.Dense(1, activation='sigmoid')
+        keras.layers.Dense(1, activation='sigmoid') # output between 0 and 1
     ])
     model.compile(
         loss=keras.losses.BinaryCrossentropy(),
@@ -54,11 +54,12 @@ y_train = train_data['coronary_disease']
 X_test = test_data.drop(columns=['coronary_disease'])
 y_test = test_data['coronary_disease']
 
-# Cross-validation setup
+# Cross-validation Kfold k = 10
 kf = KFold(n_splits=10, shuffle=True, random_state=42)
 cv_metrics = []
 loss_curves = []
 
+# go through every fold and append loss curves 
 for train_index, val_index in kf.split(X_train): 
     X_train_kf, X_val = X_train.iloc[train_index], X_train.iloc[val_index]
     y_train_kf, y_val = y_train.iloc[train_index], y_train.iloc[val_index]
@@ -86,6 +87,7 @@ fpr_test, tpr_test, _ = roc_curve(y_test, y_pred_test)
 auc_train = auc(fpr_train, tpr_train)
 auc_test = auc(fpr_test, tpr_test)
 
+# plot the loss curves per each fold
 plt.figure(figsize=(10, 5))
 for history in loss_curves:
     plt.plot(history.history['loss'], 'b-', alpha=0.3)
