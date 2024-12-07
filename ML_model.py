@@ -25,10 +25,10 @@ def calculate_metrics(y_true, y_pred):
 # creating the model based on the input shape (typically the X column)
 def create_model(input_dim):
     model = keras.models.Sequential([
-        keras.layers.Dense(120, activation='relu', input_shape=(input_dim,),
+        keras.layers.Dense(8, activation='relu', input_shape=(input_dim,),
                            kernel_initializer=keras.initializers.glorot_normal(), # prevent vanishing and exploding gradients
                            bias_initializer=keras.initializers.Zeros()),
-        keras.layers.Dense(80, activation='relu',
+        keras.layers.Dense(6, activation='relu',
                            kernel_initializer=keras.initializers.glorot_normal(),
                            bias_initializer=keras.initializers.Zeros()),
         keras.layers.Dense(1, activation='sigmoid') # output between 0 and 1
